@@ -1,9 +1,9 @@
-from flask import g
+from flask import current_app, g
 from pymongo import MongoClient
 
 def get_db():
     if 'db' not in g:
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient(current_app.config['TRANSFORMATIONS_DATABASE_URI'])
         g.db = client
     return g.db
 
