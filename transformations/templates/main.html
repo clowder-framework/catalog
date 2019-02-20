@@ -27,7 +27,7 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <a class="navbar-brand" href="/">Project name</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -38,10 +38,10 @@
           <a class="nav-link" href="{{ url_for('home') }}">Home</a>
         </li>
         {% if g.user %}
-          <li><span>{{ g.user['username'] }}</span>
-          <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+          <li class="nav-item"><span>{{ g.user['username'] }}</span>
+          <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a></li>
         {% else %}
-          <li><a href="{{ url_for('auth.login') }}">Log In</a>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a></li>
         {% endif %}
       </ul>
     </div>
@@ -60,7 +60,7 @@
       {% endif %}
     {% endwith %}
 
-    {% block content %}{% endblock %}
+      <div class="container">{% block content %}{% endblock %}</div>
 
   </main>
 
