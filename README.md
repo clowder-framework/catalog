@@ -19,7 +19,7 @@ pip install -r requirements.txt
 ### 3. Run in Development Mode
 
 ```
-export FLASK_APP=transformations
+export FLASK_APP=transformations/app.py
 export FLASK_ENV=development
 flask run
 ```
