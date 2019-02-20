@@ -24,13 +24,17 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple home page
-    @app.route('/')
-    def home():
-        return render_template('home.html')
-
     # Connect to database
     from . import db
     db.init_app(app)
+
+    # a simple home page
+    @app.route('/')
+    def home():
+        db = get_db()
+        collection = db["toolscatalog"]
+        tools = collection.tools.find()
+
+        return render_template('home.html', tools = tools)
 
     return app
