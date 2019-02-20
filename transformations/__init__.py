@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, current_app
 
 from . import auth
 from transformations.db import get_db
@@ -34,8 +34,8 @@ def create_app(test_config=None):
     # a simple home page
     @app.route('/')
     def home():
-        db = get_db()
-        collection = db["toolscatalog"]
+        database_client = get_db()
+        collection = database_client[current_app.config["TRANSFORMATIONS_DATABASE_NAME"]]
         tools = collection.tools.find()
 
         return render_template('home.html', tools = tools)
