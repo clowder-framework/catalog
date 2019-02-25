@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, current_app
 
 from . import auth
+from . import pages
 from transformations.db import get_db
 
 
@@ -10,6 +11,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(pages.bp)
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
@@ -30,14 +32,5 @@ def create_app(test_config=None):
     # Connect to database
     from . import db
     db.init_app(app)
-
-    # a simple home page
-    @app.route('/')
-    def home():
-        database_client = get_db()
-        collection = database_client[current_app.config["TRANSFORMATIONS_DATABASE_NAME"]]
-        tools = collection.tools.find()
-
-        return render_template('home.html', tools = tools)
 
     return app
