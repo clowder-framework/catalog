@@ -5,14 +5,14 @@
 
 <div class="container">
   <div class="row">
-    {% for tool in tools %}
+    {% for transformation in transformations %}
     <div class="col-4">
       <div class="card" style="width: 18rem;">
         <div class="card-body">
-          <h5 class="card-title">{{tool.title}}</h5>
-          <p class="card-text">{{tool.shortdesc}}</p>
-          <p class="card-text"><b>Contributor: </b>{{tool.author}}</p>
-          <p class="card-text"><b>Last modified: </b>{{tool.updateDate}}</p>
+          <h5 class="card-title">{{transformation.title}}</h5>
+          <p class="card-text">{{transformation.whatsnew}}</p>
+          <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
+          <p class="card-text"><b>Last modified: </b>{{transformation.updateDate}}</p>
           <a href="#" class="btn btn-primary">Detail</a>
         </div>
       </div>

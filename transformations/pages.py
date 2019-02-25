@@ -10,6 +10,6 @@ bp = Blueprint('pages', __name__)
 def home():
     db = get_db()
     collection = db["toolscatalog"]
-    tools = collection.tools.find()
+    transformations = collection.transformations.find()
 
-    return render_template('pages/home.html', tools = tools)
+    return render_template('pages/home.html', transformations = transformations)
