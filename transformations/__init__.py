@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, current_app
 
 from . import auth
 from . import pages
@@ -13,8 +13,7 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(pages.bp)
     app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'transformations.mongo'),
+        SECRET_KEY='dev'
     )
 
     if test_config is None:
