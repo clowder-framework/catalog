@@ -42,12 +42,18 @@
         <li class="nav-item {% if request.endpoint == 'pages.home' %} active {% endif %}">
           <a class="nav-link" href="{{ url_for('pages.home') }}">Home</a>
         </li>
+
+          {% if g.admin %}
+            <a class="nav-link" href="{{ url_for('publish.approve') }}">Publish</a>
+          {% endif %}
           {% if g.user %}
           <li class="nav-item">
               <a class="nav-link" href="{{ url_for('pages.post_transformation') }}">Contribute</a>
           </li>
+
           {% endif %}
       </ul>
+
       <ul class="navbar-nav">
         {% if g.user %}
           <li class="nav-item"><span>{{ g.user['username'] }}</span>

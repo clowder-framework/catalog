@@ -1,0 +1,33 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col12">
+
+                <table class="table">
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for col in columns %}
+                    <tr>
+                      <td>{{ col.name }}</td>
+                      <td>{{ col.status }}</td>
+                      <td>
+                        <form method="post" action="/publish/approve">
+                          <input type="hidden" id="transformationId" name="transformationId" value="{{ col.name }}">
+                          <input type="submit" class="btn btn-primary" value="Approve">
+                        </form>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+                </table>
+        </div>
+    </div>
+
+{% endblock %}
