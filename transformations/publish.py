@@ -32,7 +32,7 @@ def approve():
         return render_template('publish/approve.html', columns=transformations_data)
     elif request.method == 'POST':
         form_dic = request.form.to_dict()
-
+        # TODO: remove submitted true from document and insert approved: true into document
         transformations = [{"name": "extractor1", "status": 4}, {"name": "extractor2", "status": 5}]
 
         transformation_id = form_dic.get('transformationId')
