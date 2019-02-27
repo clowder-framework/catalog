@@ -12,7 +12,7 @@
 <!-- styles -->
 <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-<link type="text/css" rel="stylesheet" href="/static/css/main.css" />
+<!--<link type="text/css" rel="stylesheet" href="/static/css/main.css" />-->
 <!-- /styles -->
 
 <!-- favicons -->
@@ -37,6 +37,11 @@
         <li class="nav-item {% if request.endpoint == 'pages.home' %} active {% endif %}">
           <a class="nav-link" href="{{ url_for('pages.home') }}">Home</a>
         </li>
+          {% if g.user %}
+          <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('pages.post_transformation') }}">Post Transformation</a>
+          </li>
+          {% endif %}
       </ul>
       <ul class="navbar-nav">
         {% if g.user %}
