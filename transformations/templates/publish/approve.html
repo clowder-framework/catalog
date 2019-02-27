@@ -9,6 +9,7 @@
                 <thead>
                     <tr>
                         <th>name</th>
+                        <th>type</th>
                         <th>status</th>
                     </tr>
                 </thead>
@@ -16,6 +17,7 @@
                   {% for col in columns %}
                     <tr>
                       <td>{{ col.name }}</td>
+                      <td>{{ col.transformation_type }}</td>
                       <td>{{ col.status }}</td>
                       <td>
                         <form method="post" action="/publish/approve">
