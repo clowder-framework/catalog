@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+{% block title %}Contribute{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col12">
+            <form method="post">
+                <div class="form-group">
+                    <label for="info_json">Extractor / Converter Info JSON document</label>
+                    <textarea name="info_json" class="form-control" id="info_json" rows="10" cols="80" placeholder="Copy and paste extractor or converter info JSON document here." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
