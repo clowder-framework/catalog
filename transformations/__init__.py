@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, current_app
 
 from . import auth
+from . import publish
 from . import pages
 from transformations.db import get_db
 
@@ -11,6 +12,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(publish.bp)
     app.register_blueprint(pages.bp)
     app.config.from_mapping(
         SECRET_KEY='dev'
