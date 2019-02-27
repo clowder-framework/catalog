@@ -23,8 +23,8 @@ def approve():
             for data_tuple in transformations:
                 data = dict()
                 data['status'] = data_tuple.get('status')
-                data['transformation_type'] = data_tuple.get('transformation_type')
-                data['name'] = data_tuple.get('transformation_id')
+                data['transformation_type'] = data_tuple.get('transformationType')
+                data['name'] = data_tuple.get('transformationId')
                 transformations_data.append(data)
         except pymongo.errors.ServerSelectionTimeoutError as err:
             print(err)
@@ -39,18 +39,15 @@ def approve():
             transformations = collection.transformations.find({"status": "submitted"})
             transformations_data = []
             for data_tuple in transformations:
-                data_name = data_tuple.get('transformation_id')
-                approved = data_tuple.get('approved')
-                if approved:
-                    continue
+                data_name = data_tuple.get('transformationId')
                 if data_name == transformation_id:
-                    collection.transformations.update_one({'transformation_id': transformation_id},
+                    collection.transformations.update_one({'transformationId': transformation_id},
                                                           {'$set': {'status': 'approved'}})
                 else:
                     data = dict()
                     data['status'] = data_tuple.get('status')
-                    data['transformation_type'] = data_tuple.get('transformation_type')
-                    data['name'] = data_tuple.get('transformation_id')
+                    data['transformation_type'] = data_tuple.get('transformationType')
+                    data['name'] = data_tuple.get('transformationId')
                     transformations_data.append(data)
 
         print(transformation_id)
