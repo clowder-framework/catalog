@@ -11,18 +11,22 @@
   <input checked class="form-check-input" id="extractor" type="checkbox" value="extractor">
   <label class="form-check-label" for="extractor">Extractor</label>
 </div>
-  <div class="row">
+  <div class="card-columns">
     {% for transformation in transformations %}
 
-    <div class="col-4 {{transformation.transformation_type}}_tab">
+    <div class=" {{transformation.transformation_type}}_tab">
       <div class="card" style="margin-bottom: 10px;">
         <div class="card-body">
+
           <h5 class="card-title">{{transformation.title}}</h5>
           <p class="card-text">{{transformation.whatsnew}}</p>
           <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
-          <p class="card-text"><b>Last modified: </b>{{transformation.updateDate}}</p>
+          <p class="card-text"><b>Last modified: </b>{{ transformation.updateDate.date() }}</p>
           <a class="btn btn-primary" href="#">Detail</a>
         </div>
+        {% if getIcon(transformation.dependencies) %}
+          <img class="icon card-img-right" src="data:image/png;base64,{{getIcon(transformation.dependencies)}}" alt="Icon of the tool {{transformation.title}}" class="image-responsive icon">
+        {% endif %}
       </div>
     </div>
 
