@@ -2,22 +2,50 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-
 <div class="container">
+<div class="form-check form-check-inline">
+  <input checked class="form-check-input" id="converter" type="checkbox" value="converter">
+  <label class="form-check-label" for="converter">Converter    </label>
+</div>
+<div class="form-check form-check-inline">
+  <input checked class="form-check-input" id="extractor" type="checkbox" value="extractor">
+  <label class="form-check-label" for="extractor">Extractor</label>
+</div>
   <div class="row">
     {% for transformation in transformations %}
-    <div class="col-4">
-      <div class="card" style="width: 18rem;">
+
+    <div class="col-4 {{transformation.transformation_type}}_tab">
+      <div class="card" style="margin-bottom: 10px;">
         <div class="card-body">
           <h5 class="card-title">{{transformation.title}}</h5>
           <p class="card-text">{{transformation.whatsnew}}</p>
           <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
           <p class="card-text"><b>Last modified: </b>{{transformation.updateDate}}</p>
-          <a href="#" class="btn btn-primary">Detail</a>
+          <a class="btn btn-primary" href="#">Detail</a>
         </div>
       </div>
     </div>
+
     {% endfor %}
   </div>
 </div>
+<script language="javascript" type="text/javascript">
+
+  $('#extractor').change(function() {
+    // this will contain a reference to the checkbox
+    if (this.checked) {
+      $('.extractor_tab').show();
+    } else {
+      $('.extractor_tab').hide();
+    }
+  });
+  $('#converter').change(function() {
+    // this will contain a reference to the checkbox
+    if (this.checked) {
+      $('.converter_tab').show();
+    } else {
+      $('.converter_tab').hide();
+    }
+  });
+</script>
 {% endblock %}
