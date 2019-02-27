@@ -31,7 +31,6 @@ def login():
             search_filter = "(&(objectClass=%s)(memberOf=cn=%s,%s)(uid=%s))" % (current_app.config['LDAP_OBJECTCLASS'],
                                                                                 current_app.config['LDAP_GROUP'],
                                                                                 group_dn, username)
-            print(search_filter)
             ldap_result = ldap_client.search_s(current_app.config['LDAP_BASE_DN'], search_scope, search_filter)
             if 0 == len(ldap_result):
                 error = "cannot find in this group"
@@ -41,10 +40,15 @@ def login():
 
         ldap_client.unbind_s()
         user = dict()
+        admins = current_app.config['ADMINS']
+        user['admin'] = False
+        if username in admins:
+            user['admin'] = True
         user['id'] = username
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+            session['admin'] = user['admin']
             return redirect(url_for('pages.home'))
 
         flash(error)
@@ -54,11 +58,15 @@ def login():
 @bp.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
-
     if user_id is None:
         g.user = None
+        g.admin = False
     else:
         g.user = user_id
+        if session.get('admin'):
+            g.admin = session.get('admin')
+        else:
+            g.admin = False
 
 
 @bp.route('/logout')
