@@ -14,14 +14,14 @@
   <div class="card-columns">
     {% for transformation in transformations %}
 
-    <div class=" {{transformation.transformation_type}}_tab">
+    <div class=" {{transformation.transformationType}}_tab">
       <div class="card" style="margin-bottom: 10px;">
         <div class="card-body">
 
           <h5 class="card-title">{{transformation.title}}</h5>
-          <p class="card-text">{{transformation.whatsnew}}</p>
+          <p class="card-text">{{transformation.description}}</p>
           <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
-          <p class="card-text"><b>Last modified: </b>{{ transformation.updateDate.date() }}</p>
+          <p class="card-text"><b>Last modified: </b>{{ transformation.dateUpdated.date() }}</p>
           <a class="btn btn-primary" href="#">Detail</a>
         </div>
         {% if getIcon(transformation.dependencies) %}
