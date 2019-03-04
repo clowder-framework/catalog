@@ -3,55 +3,77 @@
 {% block content %}
 
 <form>
-<div class="form-check">
-  <input checked class="form-check-input form-check-input-override" id="converter" type="checkbox" value="converter">
-  <label class="form-check-label" for="converter">Converter    </label>
-</div>
-<div class="form-check">
-  <input checked class="form-check-input form-check-input-override" id="extractor" type="checkbox" value="extractor">
-  <label class="form-check-label" for="extractor">Extractor</label>
-</div>
+    <div class="form-check">
+        <input checked class="form-check-input form-check-input-override" id="converter" type="checkbox" value="converter">
+        <label class="form-check-label" for="converter">Converter    </label>
+    </div>
+    <div class="form-check">
+        <input checked class="form-check-input form-check-input-override" id="extractor" type="checkbox" value="extractor">
+        <label class="form-check-label" for="extractor">Extractor</label>
+    </div>
 </form>
-  <div class="card-columns">
+<div class="card-columns">
     {% for transformation in transformations %}
 
     <div class=" {{transformation.transformationType}}_tab">
-      <div class="card" style="margin-bottom: 10px;">
-        <div class="card-body">
-          {% if transformation.dependencies|length >0 and getIcon(transformation.dependencies[0]) %}
-          <img class="icon card-img-right" align="right" src="data:image/png;base64,{{getIcon(transformation.dependencies[0])}}"
-               alt="Icon of the tool {{transformation.title}}" >
-          {% endif %}
-          <h5 class="card-title">{{transformation.title}}</h5>
-          <p class="card-text">{{transformation.description}}</p>
-          <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
-          <p class="card-text"><b>Last modified: </b>{{ transformation.updated.date() }}</p>
-          <a class="btn btn-primary" href="#">Detail</a>
-        </div>
+        <div class="card" style="margin-bottom: 10px;">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        {% if hasIcons(transformation.dependencies) %}
+                        {% for software in transformation.dependencies if getIcon(software) %}
 
-      </div>
+                        <a href="{{ url_for('pages.home', software=software) }}">
+                        <img class="icon card-img-right" align="right" src="data:image/png;base64,{{getIcon(software)}}"
+                             alt="Icon of the tool {{transformation.title}}" >
+                        </a>
+
+                        {% endfor%}
+                        {% else %}
+
+                        {% if transformation.transformationType == "extractor" %}
+
+                        <object class="octicon icon" data="/static/octicons/sign-out.svg" type="image/svg+xml" width="76" align="right">
+                            <img src="/static/images/BD3a_3D.png" class="icon card-img-right" align="right"/>
+                        </object>
+                        {% else %}
+                        <object class="octicon icon" data="/static/octicons/gist.svg" type="image/svg+xml" width="76" align="right">
+                            <img src="/static/images/BD3a_3D.png" class="icon card-img-right" align="right"/>
+                        </object>
+                        {% endif %}
+                        {% endif %}
+                        <h5 class="card-title">{{transformation.title}}</h5>
+                    </div>
+                </div>
+                <p class="card-text">{{transformation.description}}</p>
+                <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
+                <p class="card-text"><b>Last modified: </b>{{ transformation.updated.date() }}</p>
+                <a class="btn btn-primary" href="#">Details</a>
+            </div>
+
+        </div>
     </div>
 
     {% endfor %}
-  </div>
+</div>
 
 <script language="javascript" type="text/javascript">
 
-  $('#extractor').change(function() {
-    // this will contain a reference to the checkbox
-    if (this.checked) {
-      $('.extractor_tab').show();
-    } else {
-      $('.extractor_tab').hide();
-    }
-  });
-  $('#converter').change(function() {
-    // this will contain a reference to the checkbox
-    if (this.checked) {
-      $('.converter_tab').show();
-    } else {
-      $('.converter_tab').hide();
-    }
-  });
+    $('#extractor').change(function() {
+        // this will contain a reference to the checkbox
+        if (this.checked) {
+            $('.extractor_tab').show();
+        } else {
+            $('.extractor_tab').hide();
+        }
+    });
+    $('#converter').change(function() {
+        // this will contain a reference to the checkbox
+        if (this.checked) {
+            $('.converter_tab').show();
+        } else {
+            $('.converter_tab').hide();
+        }
+    });
 </script>
 {% endblock %}

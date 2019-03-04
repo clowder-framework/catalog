@@ -10,10 +10,10 @@ import datetime
 
 bp = Blueprint('pages', __name__)
 
-def getIcon(tool_names):
+def getIcon(tool_name):
     db = get_db()
     collection = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
-    tool = collection.tools.find_one({"title": tool_names})
+    tool = collection.tools.find_one({"title": tool_name})
     image = ""
     gridFSIcon = gridfs.GridFS(collection, "icons")
     fs = gridFSIcon.find_one({"metadata.tool_id": str(tool["_id"])})
@@ -21,6 +21,17 @@ def getIcon(tool_names):
         base64_data = codecs.encode(fs.read(), 'base64')
         image = base64_data.decode('utf-8')
     return image
+
+def hasIcons(softwares):
+    db = get_db()
+    collection = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
+    for tool_name in softwares:
+        tool = collection.tools.find_one({"title": tool_name})
+        gridFSIcon = gridfs.GridFS(collection, "icons")
+        fs = gridFSIcon.find_one({"metadata.tool_id": str(tool["_id"])})
+        if fs:
+            return True
+    return False
 
 @bp.route('/')
 def home():
@@ -32,7 +43,8 @@ def home():
         transformations = collection.transformations.find({"dependencies": software})
     else:
         transformations = collection.transformations.find()
-    return render_template('pages/home.html', transformations = transformations, getIcon = getIcon)
+    return render_template('pages/home.html', transformations = transformations, getIcon = getIcon,
+                           hasIcons = hasIcons)
 
 
 @bp.route('/softwares')
