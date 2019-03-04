@@ -49,7 +49,5 @@ def approve():
                     data['transformation_type'] = data_tuple.get('transformationType')
                     data['name'] = data_tuple.get('transformationId')
                     transformations_data.append(data)
-
-        print(transformation_id)
         return render_template('publish/approve.html', columns=transformations_data)
 
