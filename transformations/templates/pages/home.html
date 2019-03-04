@@ -21,7 +21,7 @@
           <h5 class="card-title">{{transformation.title}}</h5>
           <p class="card-text">{{transformation.description}}</p>
           <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
-          <p class="card-text"><b>Last modified: </b>{{ transformation.dateUpdated.date() }}</p>
+          <p class="card-text"><b>Last modified: </b>{{ transformation.updated.date() }}</p>
           <a class="btn btn-primary" href="#">Detail</a>
         </div>
         {% if getIcon(transformation.dependencies) %}

@@ -108,4 +108,8 @@ db.transformations.find().forEach(
 db.transformations.renameCollection("transformations_backup");
 db.transformations_new.renameCollection("transformations");
 
+db.transformations.updateMany( {}, { $rename: { "dateCreated": "created", "dateUpdated": "updated" } } );
+db.icons.files.updateMany( {}, { $rename: { "uploadDate": "uploaded" } } );
+db.tools.updateMany( {}, { $rename: { "creationDate": "created", "updateDate": "updated" } } );
+
 ```
