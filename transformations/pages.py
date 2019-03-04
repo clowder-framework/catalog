@@ -4,6 +4,8 @@ from flask import (
 from transformations.db import get_db
 import gridfs
 import codecs
+import json
+import datetime
 
 bp = Blueprint('pages', __name__)
 
@@ -48,7 +50,41 @@ def post_transformation():
     if g.user is not None:
         if request.method == 'POST':
             info_json = request.form['info_json']
-            print(info_json)
+            transformation_type = request.form['radioOptions']
+
+            try:
+                dict_info_json = json.loads(info_json)
+
+                db = get_db()
+                database = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
+
+                source_code_url = None
+                docker_image_name = None
+
+                for repo in dict_info_json["repository"]:
+                    if repo["repType"] == "git":
+                        source_code_url = repo["repUrl"]
+                    if repo["repType"] == "docker":
+                        docker_image_name = repo["repUrl"]
+
+                dict_info_json["transformationId"] = dict_info_json.pop("name")
+                dict_info_json["externalServices"] = dict_info_json.pop("external_services")
+                dict_info_json["url"] = source_code_url
+                dict_info_json["dockerImageName"] = docker_image_name
+                dict_info_json["transformationType"] = transformation_type
+                dict_info_json["status"] = "submitted"
+                dict_info_json.pop("repository")
+                dict_info_json["created"] = datetime.datetime.utcnow()
+                dict_info_json["updated"] = datetime.datetime.utcnow()
+
+                print(dict_info_json)
+                result_id = database.transformations.insert(dict_info_json)
+                print(transformation_type + " added. ID: "  + result_id)
+
+            except ValueError as e:
+                print("Invalid JSON.")
+                raise
+
         return render_template('pages/post_transformation.html')
     return redirect(url_for('auth.login'))
 
