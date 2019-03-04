@@ -51,5 +51,5 @@ def approve():
                     transformations_data.append(data)
 
         print(transformation_id)
-        return render_template('publish/approve.html', columns=transformations)
+        return render_template('publish/approve.html', columns=transformations_data)
 
