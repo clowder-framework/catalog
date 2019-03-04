@@ -2,3 +2,7 @@
     max-height: 76px;
     max-width: 76px;
 }
+
+.form-check-input-override {
+    margin-left: 0 !important;
+}
