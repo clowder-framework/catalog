@@ -1,3 +1,4 @@
+from bson import ObjectId
 from flask import (
     Blueprint, render_template, request, g, redirect, url_for, current_app
 )
@@ -87,5 +88,19 @@ def post_transformation():
 
         return render_template('pages/post_transformation.html')
     return redirect(url_for('auth.login'))
+
+
+@bp.route('/transformations/<transformation_id>', methods=['GET'])
+def view_transformation(transformation_id):
+    try:
+
+        db = get_db()
+        database = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
+        transformation  = database.transformations.find_one({ "_id": ObjectId(transformation_id)})
+
+    except Exception as e:
+        print("Exception")
+        raise
+    return render_template('pages/view_transformation.html', transformation = transformation)
 
 
