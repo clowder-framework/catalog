@@ -18,7 +18,7 @@
     <div class=" {{transformation.transformationType}}_tab">
       <div class="card" style="margin-bottom: 10px;">
         <div class="card-body">
-          {% if getIcon(transformation.dependencies[0]) %}
+          {% if transformation.dependencies|length >0 and getIcon(transformation.dependencies[0]) %}
           <img class="icon card-img-right" align="right" src="data:image/png;base64,{{getIcon(transformation.dependencies[0])}}"
                alt="Icon of the tool {{transformation.title}}" >
           {% endif %}
