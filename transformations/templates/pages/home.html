@@ -18,10 +18,22 @@
     <div class=" {{transformation.transformationType}}_tab">
       <div class="card" style="margin-bottom: 10px;">
         <div class="card-body">
-          {% if transformation.dependencies|length >0 and getIcon(transformation.dependencies[0]) %}
-          <img class="icon card-img-right" align="right" src="data:image/png;base64,{{getIcon(transformation.dependencies[0])}}"
-               alt="Icon of the tool {{transformation.title}}" >
-          {% endif %}
+            {% if transformation.dependencies|length >0 and getIcon(transformation.dependencies[0]) %}
+            <img class="icon card-img-right" align="right" src="data:image/png;base64,{{getIcon(transformation.dependencies[0])}}"
+                 alt="Icon of the tool {{transformation.title}}" >
+            {% else %}
+
+            {% if transformation.transformationType == "extractor" %}
+
+            <object class="octicon" data="/static/octicons/sign-out.svg" type="image/svg+xml" width="76" align="right">
+                <img src="/static/images/BD3a_3D.png" class="icon card-img-right" align="right"/>
+            </object>
+            {% else %}
+            <object data="/static/octicons/gist.svg" type="image/svg+xml" width="76" align="right">
+                <img src="/static/images/BD3a_3D.png" class="icon card-img-right" align="right"/>
+            </object>
+            {% endif %}
+            {% endif %}
           <h5 class="card-title">{{transformation.title}}</h5>
           <p class="card-text">{{transformation.description}}</p>
           <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
