@@ -1,0 +1,31 @@
+{% extends 'main.html' %}
+{% block title %}View Transformation{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{transformation.transformationId}}</h1>
+    <br/>
+    <form>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input disabled type="text" class="form-control" id="description" value="{{transformation.description}}">
+        </div>
+        <div class="form-group">
+            <label for="author">Author</label>
+            <input disabled type="text" class="form-control" id="author" value="{{transformation.author}}">
+        </div>
+        <div class="form-group">
+            <label for="source-url">Source Code URL</label>
+            <input disabled type="url" class="form-control" id="source-url" value="{{transformation.url}}">
+        </div>
+        <div class="form-group">
+            <label for="docker-image-name">Docker Image Name</label>
+            <input disabled type="url" class="form-control" id="docker-image-name" value="{{transformation.dockerImageName}}">
+        </div>
+        <div class="form-group">
+            <label for="modified-date">Last Modified</label>
+            <input disabled type="date" class="form-control" id="modified-date" value="{{transformation.updated.date()}}">
+        </div>
+    </form>
+</div>
+{% endblock %}
