@@ -92,12 +92,12 @@ def post_transformation():
 
                 print(dict_info_json)
                 result_id = database.transformations.insert(dict_info_json)
-                print(transformation_type + " added. ID: "  + result_id)
-
+                print(transformation_type + " added. ID: "  + str(result_id))
+                return redirect(url_for('pages.view_transformation', transformation_id = result_id))
             except ValueError as e:
                 print("Invalid JSON.")
                 raise
-
+            
         return render_template('pages/post_transformation.html')
     return redirect(url_for('auth.login'))
 

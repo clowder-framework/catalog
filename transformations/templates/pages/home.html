@@ -2,16 +2,17 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-<form>
-    <div class="form-check">
-        <input checked class="form-check-input form-check-input-override" id="converter" type="checkbox" value="converter">
-        <label class="form-check-label" for="converter">Converter    </label>
+<div class="alert alert-dark" role="alert">
+    <div class="form-check form-check-inline">
+        <input checked class="form-check-input" id="converter" type="checkbox" value="converter">
+        <label class="form-check-label form-control-lg" for="converter">Converter    </label>
     </div>
-    <div class="form-check">
-        <input checked class="form-check-input form-check-input-override" id="extractor" type="checkbox" value="extractor">
-        <label class="form-check-label" for="extractor">Extractor</label>
+    <div class="form-check form-check-inline">
+        <input checked class="form-check-input" id="extractor" type="checkbox" value="extractor">
+        <label class="form-check-label form-control-lg" for="extractor">Extractor</label>
     </div>
-</form>
+</div>
+
 <div class="card-columns">
     {% for transformation in transformations %}
 
