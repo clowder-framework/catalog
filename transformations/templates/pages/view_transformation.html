@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container">
     <div class="card">
-        <h4 class="card-header">{{transformation.title }}</h4>
+        <h4 class="card-header">{{transformation.transformationId }}</h4>
         <div class="card-body">
             <div class="row">
                 <div class="col-6" style="padding-right:20px; border-right: 1px solid #ccc;">
@@ -29,7 +29,7 @@
                     {% endfor%}
 
                     <h4>Docker Image Name</h4>
-                    <p>{{transformation.dockerImageName}}</p>
+                    <p>{{replaceEmptyString(transformation.dockerImageName)}}</p>
                     <h4>Author</h4>
                     <p>{{transformation.author}}</p>
                     <h4>Last Modified</h4>

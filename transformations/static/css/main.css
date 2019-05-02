@@ -6,3 +6,7 @@
 .form-check-input-override {
     margin-left: 0 !important;
 }
+
+.btn-group-sm>.btn, .btn-sm {
+    padding: 0rem .5rem;
+}

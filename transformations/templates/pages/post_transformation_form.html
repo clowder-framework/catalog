@@ -1,0 +1,200 @@
+{% extends 'main.html' %}
+{% block title %}Contribute{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form method="post" action="/transformations">
+        <input name="create" hidden value="form">
+        <div class="form-group">
+            <div class="form-check form-check-inline">
+                <input checked class="form-check-input" type="radio" name="radioOptions" id="radioExtractor" value="extractor">
+                <label class="form-check-label" for="radioExtractor">Extractor</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="radioOptions" id="radioConverter" value="converter">
+                <label class="form-check-label" for="radioConverter">Converter</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="name" >Name</label>
+            <input type="text" class="form-control" id="name" required="required" name="name">
+        </div>
+
+        <div class="form-group">
+            <label for="version">Version</label>
+            <input type="text" class="form-control" id="version" required="required" name="version">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" required="required" name="description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="author">Author</label>
+            <input type="text" class="form-control" id="author" required="required" name="author">
+        </div>
+
+        <div class="form-group" id="c-group">
+            <label for="contributors1">Contributors
+                <button id="add-contributors" type="button" class="add-more btn btn-outline-primary btn-sm">Add More</button>
+            </label>
+            <div class="input-group" id="contributors1">
+                <input type="text" class="form-control" name="contributors" required="required">
+                <div class="input-group-append">
+                    <button class="btn btn-secondary remove-me" type="button" disabled>-</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group extractor-input">
+            <label for="contexts">Contexts</label>
+            <textarea class="form-control" id="contexts" name="contexts"></textarea>
+            <small id="contextsHelp" class="form-text text-muted">Please use JSON format.</small>
+
+        </div>
+
+        <!--<div class="form-group">-->
+            <!--<label>Repository-->
+                <!--<button id="add-repository" type="button" class="add-more btn btn-outline-primary btn-sm">Add More</button>-->
+
+            <!--</label>-->
+            <!--<div class="input-group mb-3" id="repository1">-->
+                <!--<div class="input-group-prepend">-->
+                    <!--<select class="custom-select" name="repType">-->
+                        <!--<option disabled selected>Repository type</option>-->
+                        <!--<option value="git">git</option>-->
+                        <!--<option value="docker">docker</option>-->
+
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<input id="repUrl" name="repUrl" type="text" class="form-control" required="required">-->
+                <!--<div class="input-group-append">-->
+                    <!--<button class="btn btn-secondary remove-me" type="button" disabled>-</button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="form-group">
+            <label for="dockerImageName">Docker Image Name</label>
+            <input type="text" class="form-control" id="dockerImageName" name="dockerImageName" required="required">
+        </div>
+        <div class="form-group">
+            <label for="url">Source Code URL</label>
+            <input type="text" class="form-control" id="url" name="url" name="url" required="required">
+        </div>
+
+        <div class="form-group extractor-input">
+            <label for="process">Process</label>
+            <textarea class="form-control" id="process" name="process"></textarea>
+            <small id="processHelp" class="form-text text-muted">Please use JSON format.</small>
+        </div>
+
+        <div class="form-group converter-input" style="display: none;">
+            <label for="input_formats">Input Format</label>
+            <textarea class="form-control" id="input_formats" required="required"></textarea>
+            <small class="form-text text-muted">Separated by commas.</small>
+
+        </div>
+
+        <div class="form-group converter-input" style="display: none;">
+            <label for="output_formats">Output Format</label>
+            <textarea class="form-control" id="output_formats" required="required"></textarea>
+                        <small class="form-text text-muted">Separated by commas.</small>
+
+        </div>
+
+        <div class="form-group">
+            <label for="external_services">External Services</label>
+            <input type="text" class="form-control" id="external_services" name="external_services">
+        </div>
+
+        <div class="form-group">
+            <label for="dependencies1">Dependencies
+                <button id="add-dependencies" type="button" class="add-more btn btn-outline-primary btn-sm">Add More</button>
+
+            </label>
+            <div id="dependencies1">
+                <select class="custom-select"  name="dependencies">
+                    <option disabled selected>Software...</option>
+
+                    {% for tool in tools %}
+                    <option value="{{tool.title}}">{{tool.title}}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="bibtex1">Bibtex
+                <button id="add-bibtex" type="button" class="add-more btn btn-outline-primary btn-sm">Add More</button>
+
+            </label>
+            <div class="input-group" id="bibtex1">
+                <input type="text" class="form-control" name="bibtex">
+                <div class="input-group-append">
+                    <button class="btn btn-secondary remove-me" type="button" disabled>-</button>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+
+<script language="javascript" type="text/javascript">
+
+    $(document.body).on('click', '.remove-me', function(){
+        // e.preventDefault();
+        var divbox = $(this).parent().parent();
+        var outerbox = divbox.parent();
+        var field_name = divbox.id;
+        $(this).parent().parent().remove();
+        // if there is only one input box left, don't remove it.
+        if (outerbox.children("div[id^='"+field_name+"']").length < 2){
+            outerbox.find(".remove-me").attr("disabled", true);
+        }
+    });
+
+    $(document).ready(function(){
+
+        $('.add-more').click(function(e){
+            e.preventDefault();
+            var field_name = e.target.id.split("-")[1];
+            // get the last DIV which ID starts with ^= "klon"
+            var $div = $("div[id^='"+field_name+"']:last");
+            // Read the Number from that DIV's ID (i.e: 3 from "klon3")
+            // And increment that number by 1
+            var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
+
+            // Clone it and assign the new ID (i.e: from num 4 to ID "klon4")
+            var $klon = $div.clone().prop('id', field_name+num );
+            $klon.css("margin-top","1rem");
+            $klon.children("input").val("");
+            // Finally insert $klon wherever you want
+
+            $div.after( $klon );
+             $div.parent().find(".remove-me").attr("disabled", false);
+        })
+        $('#radioConverter').click(function (){
+            $('.extractor-input').hide();
+            $('.extractor-input').find("textarea").attr("name", "");
+             $('.converter-input').show();
+    $('#input_formats').attr('name', 'input_formats');
+    $('#output_formats').attr('name', 'output_formats');
+        });
+
+         $('#radioExtractor').click(function (){
+            $('.converter-input').hide();
+            $('.converter-input').find("textarea").attr("name", "");
+            $('.extractor-input').show();
+            $('#contexts').attr('name', 'contexts');
+            $('#process').attr('name', 'process');
+        });
+
+
+    });
+</script>
+{% endblock %}

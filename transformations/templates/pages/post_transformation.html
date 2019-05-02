@@ -4,6 +4,8 @@
 {% block content %}
 <div class="container">
         <form method="post">
+            <input name="create" hidden value="json">
+
             <div class="form-group">
                 <label for="info_json">Extractor / Converter Info JSON document</label>
                 <textarea name="info_json" class="form-control" id="info_json" rows="10" cols="80" placeholder="Copy and paste extractor or converter info JSON document here." required></textarea>

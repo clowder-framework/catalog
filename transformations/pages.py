@@ -33,6 +33,9 @@ def hasIcons(softwares):
             return True
     return False
 
+def replaceEmptyString(text):
+    return text if text else "None"
+
 @bp.route('/')
 def home():
     # example: /?software=Cell+Profiler
@@ -62,34 +65,49 @@ def post_transformation():
     # Check if user has logged in
     if g.user is not None:
         if request.method == 'POST':
-            info_json = request.form['info_json']
+
             transformation_type = request.form['radioOptions']
 
             try:
-                dict_info_json = json.loads(info_json)
+                if request.form['create'] == "json":
+                    info_json = request.form['info_json']
+                    dict_info_json = json.loads(info_json)
+                    source_code_url = None
+                    docker_image_name = None
+                    for repo in dict_info_json["repository"]:
+                        if repo["repType"] == "git":
+                            source_code_url = repo["repUrl"]
+                        if repo["repType"] == "docker":
+                            docker_image_name = repo["repUrl"]
+                    dict_info_json["url"] = source_code_url
+                    dict_info_json["dockerImageName"] = docker_image_name
+                    dict_info_json.pop("repository")
+                    dict_info_json.pop("@context")
+                else:
+                    dict_info_json = request.form.to_dict(flat=False)
+                    single_fields = ["name", "version", "author", "description", "dockerImageName", "url"]
+                    for f in single_fields:
+                        dict_info_json[f]= dict_info_json[f][0]
+                    if transformation_type == "extractor":
+
+                        dict_info_json["contexts"][0] = json.loads(dict_info_json["contexts"][0])
+                        dict_info_json["process"] = json.loads(dict_info_json["process"])
+                    else:
+                        dict_info_json["input_formats"] = dict_info_json["input_formats"][0].replace(" ", "").split(",")
+                        dict_info_json["output_formats"] = dict_info_json["output_formats"][0].replace(" ", "").split(",")
 
                 db = get_db()
                 database = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
 
-                source_code_url = None
-                docker_image_name = None
-
-                for repo in dict_info_json["repository"]:
-                    if repo["repType"] == "git":
-                        source_code_url = repo["repUrl"]
-                    if repo["repType"] == "docker":
-                        docker_image_name = repo["repUrl"]
-
                 dict_info_json["transformationId"] = dict_info_json.pop("name")
                 dict_info_json["externalServices"] = dict_info_json.pop("external_services")
-                dict_info_json["url"] = source_code_url
-                dict_info_json["dockerImageName"] = docker_image_name
+
                 dict_info_json["transformationType"] = transformation_type
                 dict_info_json["status"] = "submitted"
-                dict_info_json.pop("repository")
+
                 dict_info_json["created"] = datetime.datetime.utcnow()
                 dict_info_json["updated"] = datetime.datetime.utcnow()
-
+                dict_info_json.pop("create")
                 print(dict_info_json)
                 result_id = database.transformations.insert(dict_info_json)
                 print(transformation_type + " added. ID: "  + str(result_id))
@@ -101,6 +119,19 @@ def post_transformation():
         return render_template('pages/post_transformation.html')
     return redirect(url_for('auth.login'))
 
+@bp.route('/transformations/form', methods=('GET', 'POST'))
+def transformation_form():
+    if g.user is not None:
+        if request.method == 'POST':
+            print(request.form.to_dict(flat=False))
+            # todo
+            return redirect(url_for('pages.view_transformation', transformation_id = "5c7d78b05b439b63a62e2990"))
+        db = get_db()
+        collection = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
+
+        tools = collection.tools.find({}, {"title":1})
+        return render_template('pages/post_transformation_form.html', tools = tools)
+    return redirect(url_for('auth.login'))
 
 @bp.route('/transformations/<transformation_id>', methods=['GET'])
 def view_transformation(transformation_id):
@@ -113,7 +144,8 @@ def view_transformation(transformation_id):
     except Exception as e:
         print("Exception")
         raise
-    return render_template('pages/view_transformation.html', transformation = transformation, getIcon = getIcon)
+    return render_template('pages/view_transformation.html', transformation = transformation, getIcon = getIcon,
+                           replaceEmptyString = replaceEmptyString)
 
 
 @bp.route('/search', methods=['GET'])
