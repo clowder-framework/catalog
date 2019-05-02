@@ -116,3 +116,16 @@ def view_transformation(transformation_id):
     return render_template('pages/view_transformation.html', transformation = transformation)
 
 
+@bp.route('/search', methods=['GET'])
+def search():
+    try:
+        db = get_db()
+        database = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
+        # text search for transformationId & description
+        transformation  =  database.transformations.find({ "$text": { "$search": request.args.get("search")}} )
+
+    except Exception as e:
+        print("Exception")
+        raise
+    return render_template('pages/home.html', transformations = transformation, getIcon = getIcon,
+                           hasIcons = hasIcons)

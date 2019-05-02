@@ -113,3 +113,9 @@ db.icons.files.updateMany( {}, { $rename: { "uploadDate": "uploaded" } } );
 db.tools.updateMany( {}, { $rename: { "creationDate": "created", "updateDate": "updated" } } );
 
 ```
+
+3. Create index for search
+
+```
+db.getCollection('transformations').createIndex( { transformationId: "text", description: "text" } )
+```
