@@ -113,7 +113,7 @@ def view_transformation(transformation_id):
     except Exception as e:
         print("Exception")
         raise
-    return render_template('pages/view_transformation.html', transformation = transformation)
+    return render_template('pages/view_transformation.html', transformation = transformation, getIcon = getIcon)
 
 
 @bp.route('/search', methods=['GET'])
