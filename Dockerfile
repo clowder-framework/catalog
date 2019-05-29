@@ -1,6 +1,6 @@
 FROM python:3
 
-MAINTAINER Yan Zhao "yanzhao3@illinois.edu"
+LABEL maintainer="yanzhao3@illinois.edu" author="Yan Zhao"
 
 WORKDIR /app
 RUN apt-get update && apt-get install -y libldap2-dev libsasl2-dev libssl-dev
