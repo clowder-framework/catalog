@@ -12,6 +12,4 @@ RUN pip install -r requirements.txt && \
 
 COPY transformations/ /app/transformations/
 
-VOLUME ["/app/instance"]
-
 CMD [ "gunicorn", "-w 4", "-b 0.0.0.0:5000", "transformations:create_app()"]
