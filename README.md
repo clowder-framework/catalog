@@ -124,7 +124,7 @@ db.getCollection('transformations').createIndex( { transformationId: "text", des
 
 1. Build image
 
-The image is based on python:3 to have gcc installed initially. python-ladp library still requires underlting OS libraries, which are described in Dockerfile.
+The image is based on python:3 to have gcc installed initially. python-ladp library still requires OS libraries, which are described in Dockerfile.
 
 You can build your docker image with the command:
 ```bash
