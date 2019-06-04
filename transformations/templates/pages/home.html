@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-<div class="alert alert-dark" role="alert">
+<div class="alert alert-dark" style="margin-left: 11px;margin-right: 11px;" role="alert">
     <div class="form-check form-check-inline">
         <input checked class="form-check-input" id="converter" type="checkbox" value="converter">
         <label class="form-check-label form-control-lg" for="converter">Converter    </label>
@@ -13,20 +13,21 @@
     </div>
 </div>
 
-<div class="card-columns">
-    {% for transformation in transformations %}
+<div class="container">
+    <div class="row masonry-grid">
+        {% for transformation in transformations %}
 
-    <div class=" {{transformation.transformationType}}_tab">
-        <div class="card" style="margin-bottom: 10px;">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
+        <div class="col-4 masonry-column">
+            <div class=" {{transformation.transformationType}}_tab">
+                <div class="card" style="margin-bottom: 10px;">
+                    <div class="card-body">
+
                         {% if hasIcons(transformation.dependencies) %}
                         {% for software in transformation.dependencies if getIcon(software) %}
 
                         <a href="{{ url_for('pages.home', software=software) }}">
-                        <img class="icon card-img-right" align="right" src="data:image/png;base64,{{getIcon(software)}}"
-                             alt="Icon of the tool {{transformation.title}}" >
+                            <img class="icon card-img-right" align="right" src="data:image/png;base64,{{getIcon(software)}}"
+                                 alt="Icon of the tool {{transformation.title}}" >
                         </a>
 
                         {% endfor%}
@@ -44,18 +45,19 @@
                         {% endif %}
                         {% endif %}
                         <h5 class="card-title">{{transformation.title}}</h5>
+
+
+                        <p class="card-text">{{transformation.description}}</p>
+                        <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
+                        <p class="card-text"><b>Last modified: </b>{{ transformation.updated.date() }}</p>
+                        <a class="btn btn-primary" href="transformations/{{transformation._id}}">Details</a>
                     </div>
                 </div>
-                <p class="card-text">{{transformation.description}}</p>
-                <p class="card-text"><b>Contributor: </b>{{transformation.author}}</p>
-                <p class="card-text"><b>Last modified: </b>{{ transformation.updated.date() }}</p>
-                <a class="btn btn-primary" href="transformations/{{transformation._id}}">Details</a>
             </div>
-
         </div>
-    </div>
 
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 
 <script language="javascript" type="text/javascript">
