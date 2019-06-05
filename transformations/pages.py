@@ -119,13 +119,9 @@ def post_transformation():
         return render_template('pages/post_transformation.html')
     return redirect(url_for('auth.login'))
 
-@bp.route('/transformations/form', methods=('GET', 'POST'))
+@bp.route('/transformations/form', methods=('GET'))
 def transformation_form():
     if g.user is not None:
-        if request.method == 'POST':
-            print(request.form.to_dict(flat=False))
-            # todo
-            return redirect(url_for('pages.view_transformation', transformation_id = "5c7d78b05b439b63a62e2990"))
         db = get_db()
         collection = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
 
