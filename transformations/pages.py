@@ -107,7 +107,7 @@ def post_transformation():
 
                 dict_info_json["created"] = datetime.datetime.utcnow()
                 dict_info_json["updated"] = datetime.datetime.utcnow()
-                dict_info_json.pop("create")
+
                 print(dict_info_json)
                 result_id = database.transformations.insert(dict_info_json)
                 print(transformation_type + " added. ID: "  + str(result_id))
