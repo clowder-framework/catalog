@@ -119,3 +119,27 @@ db.tools.updateMany( {}, { $rename: { "creationDate": "created", "updateDate": "
 ```
 db.getCollection('transformations').createIndex( { transformationId: "text", description: "text" } )
 ```
+
+## Docker
+
+1. Build image
+
+The image is based on python:3 to have gcc installed initially. python-ladp library still requires OS libraries, which are described in Dockerfile.
+
+You can build your docker image with the command:
+```bash
+% docker build -t transfomation .
+```
+
+2. Run docker image
+
+Use the instance/config.py.template as template to create config.py.
+
+For macOS, you can set url in TRANSFORMATIONS_DATABASE_URI as 'docker.for.mac.host.internal'. Note the host name maybe changed according to your docker version.
+Refer to : https://stackoverflow.com/questions/31249112/allow-docker-container-to-connect-to-a-local-host-postgres-database
+
+To run the docker image you may like the following command line:
+```bash
+% docker run --rm -d -p 5000:5000 -v path_to_conf/config.py:/app/instance/config.py transformation
+```
+
