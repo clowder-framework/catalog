@@ -119,7 +119,7 @@ def post_transformation():
         return render_template('pages/post_transformation.html')
     return redirect(url_for('auth.login'))
 
-@bp.route('/transformations/form', methods=('GET'))
+@bp.route('/transformations/form', methods=['GET'])
 def transformation_form():
     if g.user is not None:
         db = get_db()
