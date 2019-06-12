@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-<div class="alert alert-dark" style="margin-left: 11px;margin-right: 11px;" role="alert">
+<div class="alert alert-dark" style="margin-left: 11px;margin-right: 5%;" role="alert">
     <div class="form-check form-check-inline">
         <input checked class="form-check-input" id="converter" type="checkbox" value="converter">
         <label class="form-check-label form-control-lg" for="converter">Converter    </label>
@@ -14,10 +14,10 @@
 </div>
 
 <div class="container">
-    <div class="row masonry-grid">
+    <div class="grid" data-masonry='{ "itemSelector": ".grid-item"}' >
         {% for transformation in transformations %}
 
-        <div class="col-4 masonry-column">
+        <div class="grid-item" style="width: 30%; margin-right: 3%">
             <div class=" {{transformation.transformationType}}_tab">
                 <div class="card" style="margin-bottom: 10px;">
                     <div class="card-body">
@@ -69,6 +69,7 @@
         } else {
             $('.extractor_tab').hide();
         }
+        $('.grid').masonry('layout');
     });
     $('#converter').change(function() {
         // this will contain a reference to the checkbox
@@ -77,6 +78,7 @@
         } else {
             $('.converter_tab').hide();
         }
+        $('.grid').masonry('layout');
     });
 </script>
 {% endblock %}
