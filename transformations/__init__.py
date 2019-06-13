@@ -5,6 +5,7 @@ from flask import Flask, render_template, current_app
 from . import auth
 from . import publish
 from . import pages
+from . import api
 from transformations.db import get_db
 
 
@@ -14,6 +15,7 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(publish.bp)
     app.register_blueprint(pages.bp)
+    app.register_blueprint(api.bp)
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
