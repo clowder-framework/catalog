@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, current_app
+    Blueprint, current_app, Response
 )
 from transformations.db import get_db
 import json
@@ -54,8 +54,8 @@ def singleToolInfo(id, db):
 
 @bp.route('converters')
 def convertersList():
-    return jsonList(toolTypes['converter'])
+    return Response(jsonList(toolTypes['converter']), mimetype = 'application/json')
 
 @bp.route('extractors')
 def extractorsList():
-    return jsonList(toolTypes['extractor'])
+    return Response(jsonList(toolTypes['extractor']), mimetype = 'application/json')
