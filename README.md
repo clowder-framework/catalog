@@ -128,7 +128,7 @@ The image is based on python:3 to have gcc installed initially. python-ladp libr
 
 You can build your docker image with the command:
 ```bash
-% docker build -t transfomation .
+% docker build -t transformation .
 ```
 
 2. Run docker image
