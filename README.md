@@ -138,7 +138,7 @@ LDAP_GROUP_DN: Applied to the base DN to find groups.
 LDAP_OBJECTCLASS: An LDAP object class that applies to users.
 LDAP_TRUST_ALL_CERTIFICATES: A True/False setting.
 ADMINS: A list of users in LDAP that have administrator permissions to the catalog.
-URL_PREFIX: This can be used if you need to prefix all URLs with a prefix. Then you can set up a proxy to forward to the given server with this prefix and have the routes work with the prefix.
+URL_PREFIX: This can be used if you need to prefix all URLs with a prefix. Then you can set up a proxy to forward to the given server with this prefix and have the routes work with the prefix. This should always start with a slash (/).
 
 ## Docker
 
