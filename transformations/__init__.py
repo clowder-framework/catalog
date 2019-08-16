@@ -19,8 +19,9 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
 
-    app.config['STATIC_FOLDER'] = app.config['URL_PREFIX']
-    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {app.config['URL_PREFIX']: app.wsgi_app})
+    if app.config['URL_PREFIX'] is not None:
+        app.config['STATIC_FOLDER'] = app.config['URL_PREFIX']
+        app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {app.config['URL_PREFIX']: app.wsgi_app})
     # create and configure the app
     app.register_blueprint(auth.bp)
     app.register_blueprint(publish.bp)
