@@ -20,13 +20,15 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
 
     if 'URL_PREFIX' in app.config:
-        app.config['STATIC_FOLDER'] = app.config['URL_PREFIX']
-        app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {app.config['URL_PREFIX']: app.wsgi_app})
+        prefix = app.config['URL_PREFIX']
+    else:
+        prefix = None
+
     # create and configure the app
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(publish.bp)
-    app.register_blueprint(pages.bp)
-    app.register_blueprint(api.bp)
+    app.register_blueprint(auth.bp, url_prefix=prefix)
+    app.register_blueprint(publish.bp, url_prefix=prefix)
+    app.register_blueprint(pages.bp, url_prefix=prefix)
+    app.register_blueprint(api.bp, url_prefix=prefix)
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
