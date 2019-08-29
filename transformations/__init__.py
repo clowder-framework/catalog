@@ -2,33 +2,48 @@ import os
 
 from flask import Flask, render_template, current_app
 
+import logging
+import json
 from . import auth
 from . import publish
 from . import pages
 from . import api
-from werkzeug import DispatcherMiddleware
 from transformations.db import get_db
 
 
 def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True)
+    logging.basicConfig(format='%(asctime)-15s [%(threadName)-15s] %(levelname)-7s :' ' %(name)s - %(message)s', level=logging.INFO)
     if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
+        try:
+            with open('instance/config.json') as json_file:
+                config = json.load(json_file)
+        except IOError as e:
+            # If the file is unreadable for any reason, make sure the config is set to None
+            config = None
     else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
+        config = test_config
 
-    if 'URL_PREFIX' in app.config:
-        prefix = app.config['URL_PREFIX']
+    if config is not None and 'URL_PREFIX' in config:
+        prefix = config['URL_PREFIX']
+        staticpath = prefix+'/static'
     else:
         prefix = None
+        staticpath = '/static'
+
+    app = Flask(__name__, instance_relative_config=True, static_url_path=staticpath)
+    if config is None:
+        # load the instance config, if it exists, when a configuration is not already in existence
+        app.config.from_pyfile('config.py', silent=True)
+    else:
+        # load the prior config if already loaded
+        app.config.from_mapping(config)
 
     # create and configure the app
-    app.register_blueprint(auth.bp, url_prefix=prefix)
-    app.register_blueprint(publish.bp, url_prefix=prefix)
-    app.register_blueprint(pages.bp, url_prefix=prefix)
-    app.register_blueprint(api.bp, url_prefix=prefix)
+    app.register_blueprint(auth.bp, url_prefix=prefix, static_folder="static")
+    app.register_blueprint(publish.bp, url_prefix=prefix, static_folder="static")
+    app.register_blueprint(pages.bp, url_prefix=prefix, static_folder="static")
+    app.register_blueprint(api.bp, url_prefix=prefix, static_folder="static")
+    print (app.url_map)
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
