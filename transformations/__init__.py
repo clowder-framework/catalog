@@ -43,7 +43,6 @@ def create_app(test_config=None):
     app.register_blueprint(publish.bp, url_prefix=prefix, static_folder="static")
     app.register_blueprint(pages.bp, url_prefix=prefix, static_folder="static")
     app.register_blueprint(api.bp, url_prefix=prefix, static_folder="static")
-    print (app.url_map)
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
