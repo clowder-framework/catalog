@@ -163,3 +163,11 @@ To run the docker image you may like the following command line:
 % docker run --rm -d -p 5000:5000 -v path_to_conf/config.py:/app/instance/config.py transformation
 ```
 
+## Kubernetes
+
+The transformations-catalog.yaml file uses the browndog/transformations-catalog image posted on Docker Hub, though you can edit the yaml to use a local build of the image if you want to make changes to the image.
+
+#### Edit yaml
+The configuration file that is used by the Docker image is now defined in the yaml file. The JSON within the ConfigMap is the same JSON that would be used by the Docker image. You will want to edit this ConfigMap to match your deployment.
+
+The current yaml assumes you are using a remote database. Future versions may add a database service to allow quick deployment without needing to have a remote database set up.

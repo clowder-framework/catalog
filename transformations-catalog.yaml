@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: transformations-config
+  namespace: default
+data:
+  config.json: |-
+    {
+    "TRANSFORMATIONS_DATABASE_URI":"mongodb://localhost:27017",
+    "TRANSFORMATIONS_DATABASE_NAME":"transformations_catalog",
+    "LDAP_HOSTNAME":"",
+    "LDAP_GROUP":"",
+    "LDAP_BASE_DN":"",
+    "LDAP_USER_DN":"",
+    "LDAP_GROUP_DN":"",
+    "LDAP_OBJECTCLASS":"",
+    "LDAP_TRUST_ALL_CERTIFICATES":"",
+    "ADMINS":"",
+    "URL_PREFIX":"/anything"
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transformations-catalog
+spec:
+  selector:
+    matchLabels:
+      run: transformations-catalog
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: transformations-catalog
+    spec:
+      volumes:
+      - name: config-volume
+        configMap:
+          name: transformations-config
+      containers:
+      - name: transformations-catalog-container
+        image: browndog/transformations-catalog
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/instance/config.json
+          subPath: config.json
