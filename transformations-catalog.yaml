@@ -46,3 +46,29 @@ spec:
         - name: config-volume
           mountPath: /app/instance/config.json
           subPath: config.json
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transformations-catalog-svc
+spec:
+  selector:
+    app: transformations-catalog
+  ports:
+    - protocol: TCP
+      port: 5000
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: transformations-catalog-ingress
+spec:
+  rules:
+  - host: catalog.clowderframework.org
+    http:
+      paths:
+      - path: 
+        backend:
+          serviceName: transformations-catalog
+          servicePort: 5000
