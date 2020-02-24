@@ -6,32 +6,34 @@ metadata:
 data:
   config.json: |-
     {
-    "TRANSFORMATIONS_DATABASE_URI":"mongodb://localhost:27017",
+    "TRANSFORMATIONS_DATABASE_URI":"mongodb://mongo-1.ncsa.illinois.edu:27017,mongodb://mongo-2.ncsa.illinois.edu:27017,mongodb://mongo-3.ncsa.illinois.edu:27017/?replicaSet=ISDA",
     "TRANSFORMATIONS_DATABASE_NAME":"transformations_catalog",
-    "LDAP_HOSTNAME":"",
-    "LDAP_GROUP":"",
-    "LDAP_BASE_DN":"",
-    "LDAP_USER_DN":"",
-    "LDAP_GROUP_DN":"",
-    "LDAP_OBJECTCLASS":"",
-    "LDAP_TRUST_ALL_CERTIFICATES":"",
-    "ADMINS":"",
-    "URL_PREFIX":"/anything"
+    "LDAP_HOSTNAME":"ldaps://ldap.ncsa.illinois.edu:636",
+    "LDAP_GROUP":"isda_bd_usersdev",
+    "LDAP_BASE_DN":"dc=ncsa,dc=illinois,dc=edu",
+    "LDAP_USER_DN":"ou=people",
+    "LDAP_GROUP_DN":"ou=groups",
+    "LDAP_OBJECTCLASS":"inetorgperson",
+    "LDAP_TRUST_ALL_CERTIFICATES":"false",
+    "ADMINS":"svcbd",
+    "URL_PREFIX":""
     }
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: transformations-catalog
+  labels:
+    app: transformations-catalog
 spec:
   selector:
     matchLabels:
-      run: transformations-catalog
+      app: transformations-catalog
   replicas: 1
   template:
     metadata:
       labels:
-        run: transformations-catalog
+        app: transformations-catalog
     spec:
       volumes:
       - name: config-volume
@@ -51,13 +53,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: transformations-catalog-svc
+  labels:
+    app: transformations-catalog
 spec:
   selector:
     app: transformations-catalog
   ports:
     - protocol: TCP
       port: 5000
-  type: NodePort
+      name: catalog-port
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
@@ -70,5 +74,5 @@ spec:
       paths:
       - path: 
         backend:
-          serviceName: transformations-catalog
-          servicePort: 5000
+          serviceName: transformations-catalog-svc
+          servicePort: catalog-port
