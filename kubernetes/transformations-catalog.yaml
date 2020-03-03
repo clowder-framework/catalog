@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transformations-catalog
+  labels:
+    app: transformations-catalog
+spec:
+  selector:
+    matchLabels:
+      app: transformations-catalog
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: transformations-catalog
+    spec:
+      volumes:
+      - name: config-volume
+        configMap:
+          name: transformations-config
+      containers:
+      - name: transformations-catalog
+        image: browndog/transformations-catalog
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/instance/config.json
+          subPath: config.json
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transformations-catalog-svc
+  labels:
+    app: transformations-catalog
+spec:
+  selector:
+    app: transformations-catalog
+  ports:
+    - protocol: TCP
+      port: 5000
+      name: catalog-port
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: transformations-catalog-ingress
+spec:
+  rules:
+  - host: catalog.clowderframework.org
+    http:
+      paths:
+      - path: 
+        backend:
+          serviceName: transformations-catalog-svc
+          servicePort: catalog-port
