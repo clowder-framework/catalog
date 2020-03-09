@@ -170,4 +170,4 @@ The transformations-catalog.yaml file uses the browndog/transformations-catalog 
 #### Edit yaml
 The configuration file that is used by the Docker image is now defined in the transformations-catalog-secret.yaml file. The JSON within the ConfigMap is the same JSON that would be used by the Docker image. You will want to edit this ConfigMap to match your deployment.
 
-The current yaml assumes you are using a remote database. Future versions may add a database service to allow quick deployment without needing to have a remote database set up. If you are not pointing to an already set up database then you can quickly set up a mongo database with `helm install my-release stable/mongodb`
+The current yaml assumes you are using a remote database. Future versions may add a database service to allow quick deployment without needing to have a remote database set up. If you are not pointing to an already set up database then you can quickly set up a mongo database with `helm install my-release stable/mongodb`. The current setup has been tested and works with MongoDB 3.6.17, 4.0.16, and 4.2.3.
