@@ -39,10 +39,10 @@ def create_app(test_config=None):
         app.config.from_mapping(config)
 
     # create and configure the app
-    app.register_blueprint(auth.bp, url_prefix=prefix, static_folder="static")
-    app.register_blueprint(publish.bp, url_prefix=prefix, static_folder="static")
+    app.register_blueprint(auth.bp, url_prefix=prefix+'/auth', static_folder="static")
+    app.register_blueprint(publish.bp, url_prefix=prefix+'/publish', static_folder="static")
     app.register_blueprint(pages.bp, url_prefix=prefix, static_folder="static")
-    app.register_blueprint(api.bp, url_prefix=prefix, static_folder="static")
+    app.register_blueprint(api.bp, url_prefix=prefix+'/api/v2', static_folder="static")
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
