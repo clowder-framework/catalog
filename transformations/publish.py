@@ -5,6 +5,7 @@ from flask import (
 from transformations.db import get_db
 
 
+#bp = Blueprint('publish', __name__)
 bp = Blueprint('publish', __name__, url_prefix='/publish')
 columns = ["name", "status"]
 

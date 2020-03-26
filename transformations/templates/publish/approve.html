@@ -20,7 +20,7 @@
                       <td>{{ col.transformation_type }}</td>
                       <td>{{ col.status }}</td>
                       <td>
-                        <form method="post" action="/publish/approve">
+                        <form method="post" action="{{ url_for('publish.approve') }}">
                           <input type="hidden" id="transformationId" name="transformationId" value="{{ col.name }}">
                           <input type="submit" class="btn btn-primary" value="Approve">
                         </form>
