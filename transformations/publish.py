@@ -5,7 +5,6 @@ from flask import (
 from transformations.db import get_db
 
 
-#bp = Blueprint('publish', __name__)
 bp = Blueprint('publish', __name__, url_prefix='/publish')
 columns = ["name", "status"]
 
@@ -33,7 +32,7 @@ def approve():
                 print(err)
 
             return render_template('publish/approve.html', columns=transformations_data)
-        elif request.method == 'POST':
+        else:
             form_dic = request.form.to_dict()
             transformation_id = form_dic.get('transformationId')
             if transformation_id:
