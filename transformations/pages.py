@@ -15,11 +15,12 @@ def getIcon(tool_name):
     collection = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
     tool = collection.tools.find_one({"title": tool_name})
     image = ""
-    gridFSIcon = gridfs.GridFS(collection, "icons")
-    fs = gridFSIcon.find_one({"metadata.tool_id": str(tool["_id"])})
-    if fs:
-        base64_data = codecs.encode(fs.read(), 'base64')
-        image = base64_data.decode('utf-8')
+    if (tool):
+        gridFSIcon = gridfs.GridFS(collection, "icons")
+        fs = gridFSIcon.find_one({"metadata.tool_id": str(tool["_id"])})
+        if fs:
+            base64_data = codecs.encode(fs.read(), 'base64')
+            image = base64_data.decode('utf-8')
     return image
 
 def hasIcons(softwares):
@@ -27,10 +28,11 @@ def hasIcons(softwares):
     collection = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
     for tool_name in softwares:
         tool = collection.tools.find_one({"title": tool_name})
-        gridFSIcon = gridfs.GridFS(collection, "icons")
-        fs = gridFSIcon.find_one({"metadata.tool_id": str(tool["_id"])})
-        if fs:
-            return True
+        if (tool):
+            gridFSIcon = gridfs.GridFS(collection, "icons")
+            fs = gridFSIcon.find_one({"metadata.tool_id": str(tool["_id"])})
+            if fs:
+                return True
     return False
 
 def replaceEmptyString(text):
