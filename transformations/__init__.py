@@ -27,7 +27,7 @@ def create_app(test_config=None):
         prefix = config['URL_PREFIX']
         staticpath = prefix+'/static'
     else:
-        prefix = None
+        prefix = ""
         staticpath = '/static'
 
     app = Flask(__name__, instance_relative_config=True, static_url_path=staticpath)
