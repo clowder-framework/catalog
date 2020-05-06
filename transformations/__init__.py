@@ -27,7 +27,7 @@ def create_app(test_config=None):
         prefix = config['URL_PREFIX']
         staticpath = prefix+'/static'
     else:
-        prefix = None
+        prefix = ""
         staticpath = '/static'
 
     app = Flask(__name__, instance_relative_config=True, static_url_path=staticpath)
@@ -39,10 +39,10 @@ def create_app(test_config=None):
         app.config.from_mapping(config)
 
     # create and configure the app
-    app.register_blueprint(auth.bp, url_prefix=prefix, static_folder="static")
-    app.register_blueprint(publish.bp, url_prefix=prefix, static_folder="static")
+    app.register_blueprint(auth.bp, url_prefix=prefix+'/auth', static_folder="static")
+    app.register_blueprint(publish.bp, url_prefix=prefix+'/publish', static_folder="static")
     app.register_blueprint(pages.bp, url_prefix=prefix, static_folder="static")
-    app.register_blueprint(api.bp, url_prefix=prefix, static_folder="static")
+    app.register_blueprint(api.bp, url_prefix=prefix+'/api/v2', static_folder="static")
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
