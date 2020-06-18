@@ -5,12 +5,12 @@
 
 ### 1. Clone Repository
 ```
-https://opensource.ncsa.illinois.edu/bitbucket/scm/bd/bd-transformations-catalog.git
+https://github.com/clowder-framework/catalog.git
 ```
 
 ### 2. Setup Environment
 ```
-cd bd-trasformations-catalog
+cd catalog
 virtualenv -p python3 venv
 source venv/bin/activate
 pip install -r requirements.txt
