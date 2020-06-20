@@ -127,8 +127,9 @@ db.getCollection('transformations').createIndex( { transformationId: "text", des
 Each line of the configuration file should contain one configuration setting and its value. Use an equal sign (=) between the setting and the value, and put quotes (") around the value. Comments can be made by adding a pound sign (#) before what you want to comment out.
 
 2. Available Configuration Settings
-
-TRANSFORMATIONS_DATABASE_URI: The URI for the Mongo database. Use the Connection String URI format as described at https://docs.mongodb.com/manual/reference/connection-string/.
+```
+TRANSFORMATIONS_DATABASE_URI: The URI for the Mongo database. Use the Connection String URI format as
+                              described at https://docs.mongodb.com/manual/reference/connection-string/.
 TRANSFORMATIONS_DATABASE_NAME: The name of the Mongo database.
 LDAP_HOSTNAME: The full URI to the LDAP server. Include the port if non-standard.
 LDAP_GROUP: The LDAP group name that contains people that are authorized.
@@ -138,8 +139,12 @@ LDAP_GROUP_DN: Applied to the base DN to find groups.
 LDAP_OBJECTCLASS: An LDAP object class that applies to users.
 LDAP_TRUST_ALL_CERTIFICATES: A True/False setting.
 ADMINS: A list of users in LDAP that have administrator permissions to the catalog.
-URL_PREFIX: This can be used if you need to prefix all URLs with a prefix. Then you can set up a proxy to forward to the given server with this prefix and have the routes work with the prefix. This should always start with a slash (/).
-
+URL_PREFIX: This can be used if you need to prefix all URLs with a prefix. Then you can set up a proxy
+            to forward to the given server with this prefix and have the routes work with the prefix.
+            This should always start with a slash (/).
+ANONYMOUS_SUBMISSION: A True/False setting. When set to True, allows unauthenticated users to submit
+                      transformations. Defaults to False.
+```
 ## Docker
 
 1. Build image
@@ -162,6 +167,12 @@ To run the docker image you may like the following command line:
 ```bash
 % docker run --rm -d -p 5000:5000 -v path_to_conf/config.py:/app/instance/config.py transformation
 ```
+
+3. Run locally using docker-compose
+
+docker-compose is provided as an easy test environment. An initial config.json is provided for ease of testing that is set to use the values from the docker-compose. This allows for a quick clone of the repository and a simple `docker-compose up` to start using an unsecured version of the catalog locally. This configuration file allows for anyone to submit transformations and exposes the catalog on local port 5000, suitable for testing, but likely not what you want for production.
+
+Beyond simply cloning the repo and using `docker-compose up`, you may want to make local changes and test those. `docker-compose up --build` will rebuild the images, and clear the database volume. The database can be empty and still function with the catalog, with the only failure being needing to create an index on the database for search to work. This bug may be addressed in future releases, automating creating the index.
 
 ## Kubernetes
 

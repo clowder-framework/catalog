@@ -1,0 +1,16 @@
+version: '2.0'
+services:
+  mongodb:
+    image: mongo:4.2
+    volumes:
+      - "dbdata:/data/db"
+  catalog:
+    ports:
+    - "5000:5000"
+    volumes:
+    - ./instance:/app/instance
+    build: .
+    image: transformations-catalog
+
+volumes:
+  dbdata:
