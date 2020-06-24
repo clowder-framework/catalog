@@ -10,7 +10,7 @@ services:
     volumes:
     - ./instance:/app/instance
     build: .
-    image: transformations-catalog
+    image: clowder/catalog
 
 volumes:
   dbdata:
