@@ -38,10 +38,31 @@
                         <p>{{replaceEmptyString(transformation.dockerImageName)}}</p>
                         <h4>Author</h4>
                         <p>{{transformation.author}}</p>
+                        {% if transformation.contributors|length > 0 %}
+                        <h4>Contributors</h4>
+                            <p>
+                            {% for contributor in transformation.contributors %}
+                                {% if loop.last %}
+                                    {{ contributor }}
+                                {% else %}
+                                    {{ contributor }},
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                        {% endif %}
                         <h4>Last Modified</h4>
                         <p>{{transformation.updated.date()}}</p>
                     </div>
                 </div>
+                {% if transformation.bibtex|length > 0 and transformation.bibtex[0] != "" %}
+                <div>
+                    <hr />
+                    <h4>Citations</h4>
+                    {% for citation in transformation.bibtex %}
+                        <p>{{ citation }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </div>
     {% endfor %}
