@@ -7,6 +7,7 @@ import gridfs
 import codecs
 import json
 import datetime
+from pymongo.collation import Collation
 
 bp = Blueprint('pages', __name__)
 
@@ -139,7 +140,8 @@ def view_transformation(transformation_id):
         database = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
         transformation  = database.transformations.find_one({ "_id": ObjectId(transformation_id)})
         alltransformations = database.transformations.find({"transformationId":
-                                                             transformation["transformationId"] }).sort("version", -1)
+                                                             transformation["transformationId"] }).sort("version", -1).\
+                                                             collation(Collation(locale='en_US', numericOrdering=True))
 
     except Exception as e:
         print("Exception")
