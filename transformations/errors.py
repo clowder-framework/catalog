@@ -1,27 +1,8 @@
-from flask import render_template, app
-import transformations
-from transformations import api
-from transformations import auth
-from transformations import db
-from transformations import pages
-from transformations import publish
+from flask import Blueprint, render_template, app
 
-@transformations.errorhandler(Exception)
+bp = Blueprint('errors', __name__)
+
+@bp.app_errorhandler(Exception)
 def handle_all_errors(e):
-    return render_template('pages/error.html', error=e)
+    return render_template('pages/error.html', err=e)
 
-#@auth.errorhandler(Exception)
-#def handle_all_errors(e):
-#    return render_template('pages/error.html', error=e)
-
-#@db.errorhandler(Exception)
-#def handle_all_errors(e):
-#    return render_template('pages/error.html', error=e)
-
-#@pages.errorhandler(Exception)
-#def handle_all_errors(e):
-#    return render_template('pages/error.html', error=e)
-
-#@publish.errorhandler(Exception)
-#def handle_all_errors(e):
-#    return render_template('pages/error.html', error=e)

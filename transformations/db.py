@@ -1,6 +1,5 @@
 from flask import current_app, g
 from pymongo import MongoClient, TEXT
-from transformations import errors
 
 def get_db():
     if 'db' not in g:

@@ -7,7 +7,7 @@ import gridfs
 import codecs
 import json
 import datetime
-from transformations import errors
+from werkzeug.exceptions import HTTPException
 
 bp = Blueprint('pages', __name__)
 
@@ -60,7 +60,7 @@ def softwares():
     collection = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
 
     tools = collection.tools.find()
-    #return ("Server Error Test", 501)
+    raise HTTPException()
     return render_template('pages/softwares.html', tools = tools, getIcon = getIcon)
 
 
