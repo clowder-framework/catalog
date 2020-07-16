@@ -4,6 +4,11 @@ import ldap
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
+import json
+from http.client import HTTPConnection, HTTPSConnection
+from base64 import b64encode
+import re
+import ssl
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -14,42 +19,68 @@ def login():
         username = request.form['username']
         password = request.form['password']
         error = None
-        ldap_hostname = current_app.config['LDAP_HOSTNAME']
-        ldap_client = ldap.initialize(ldap_hostname)
-        ldap_client.set_option(ldap.OPT_REFERRALS, 0)
-        user_dn = "uid=%s,%s,%s" % (username, current_app.config['LDAP_USER_DN'], current_app.config['LDAP_BASE_DN'])
-        group_dn = "%s,%s" % (current_app.config['LDAP_GROUP_DN'], current_app.config['LDAP_BASE_DN'])
-        try:
-            ldap_client.protocol_version = ldap.VERSION3
-            ldap_client.simple_bind_s(user_dn, password)
-        except Exception as ex:
-            error = ex
+        user = None
+        if re.search(r'LDAP', current_app.config["AUTH_TYPE"], flags=re.IGNORECASE):
+            if "AUTH_HOSTNAME" in current_app.config.keys():
+                ldap_hostname = current_app.config['AUTH_HOSTNAME']
+            else:
+                ldap_hostname = current_app.config['LDAP_HOSTNAME']
+            ldap_client = ldap.initialize(ldap_hostname)
+            ldap_client.set_option(ldap.OPT_REFERRALS, 0)
+            user_dn = "uid=%s,%s,%s" % (username, current_app.config['LDAP_USER_DN'], current_app.config['LDAP_BASE_DN'])
+            group_dn = "%s,%s" % (current_app.config['LDAP_GROUP_DN'], current_app.config['LDAP_BASE_DN'])
+            try:
+                ldap_client.protocol_version = ldap.VERSION3
+                ldap_client.simple_bind_s(user_dn, password)
+            except Exception as ex:
+                error = ex
 
-        try:
+            try:
 
-            search_scope = ldap.SCOPE_SUBTREE
-            search_filter = "(&(objectClass=%s)(memberOf=cn=%s,%s)(uid=%s))" % (current_app.config['LDAP_OBJECTCLASS'],
-                                                                                current_app.config['LDAP_GROUP'],
-                                                                                group_dn, username)
-            ldap_result = ldap_client.search_s(current_app.config['LDAP_BASE_DN'], search_scope, search_filter)
-            if 0 == len(ldap_result):
-                error = "cannot find in this group"
+                search_scope = ldap.SCOPE_SUBTREE
+                search_filter = "(&(objectClass=%s)(memberOf=cn=%s,%s)(uid=%s))" % (current_app.config['LDAP_OBJECTCLASS'],
+                                                                                    current_app.config['LDAP_GROUP'],
+                                                                                    group_dn, username)
+                ldap_result = ldap_client.search_s(current_app.config['LDAP_BASE_DN'], search_scope, search_filter)
+                if 0 == len(ldap_result):
+                    error = "cannot find in this group"
 
-        except Exception as ex:
-            error = ex
+            except Exception as ex:
+                error = ex
 
-        ldap_client.unbind_s()
-        user = dict()
+            ldap_client.unbind_s()
+            user = dict()
+        elif re.search(r'Clowder', current_app.config["AUTH_TYPE"], flags=re.IGNORECASE):
+            auth_hostname = current_app.config["AUTH_HOSTNAME"]
+            if "SSL_CERT" not in current_app.config.keys() or current_app.config["SSL_CERT"] is None \
+                                                              or current_app.config["SSL_CERT"] == "":
+                conn = HTTPConnection(auth_hostname)
+            else:
+                conn = HTTPSConnection(auth_hostname, cert_file=current_app.config["SSL_CERT"])
+            userAndPass = b64encode(bytes(username + ":" + password, "utf-8")).decode("ascii")
+            headers = {'Authorization': 'Basic %s' % userAndPass}
+            conn.request("GET", current_app.config["AUTH_URL"], headers=headers)
+            response = conn.getresponse()
+            getname = response.read().decode("ascii")
+            try:
+                user = json.loads(getname)
+                if "fullname" not in user.keys():
+                    error = "Clowder authorization failed"
+            except Exception as e:
+                error = "Decoding response failed, getname is " + getname
+        else:
+            error = "Please set a recognized AUTH_TYPE (Clowder or LDAP) in your configuration file"
         admins = current_app.config['ADMINS']
-        user['admin'] = False
-        if username in admins:
-            user['admin'] = True
-        user['id'] = username
-        if error is None:
-            session.clear()
-            session['user_id'] = user['id']
-            session['admin'] = user['admin']
-            return redirect(url_for('pages.home'))
+        if user is not None:
+            user['admin'] = False
+            if username in admins:
+                user['admin'] = True
+            user['id'] = username
+            if error is None:
+                session.clear()
+                session['user_id'] = user['id']
+                session['admin'] = user['admin']
+                return redirect(url_for('pages.home'))
 
         flash(error)
     return render_template('auth/login.html')

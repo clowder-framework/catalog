@@ -130,7 +130,11 @@ Each line of the configuration file should contain one configuration setting and
 
 TRANSFORMATIONS_DATABASE_URI: The URI for the Mongo database. Use the Connection String URI format as described at https://docs.mongodb.com/manual/reference/connection-string/.
 TRANSFORMATIONS_DATABASE_NAME: The name of the Mongo database.
-LDAP_HOSTNAME: The full URI to the LDAP server. Include the port if non-standard.
+AUTH_TYPE: The authorization to use, currently only supports LDAP and Clowder.
+AUTH_HOSTNAME: The server to use for authentication. Include the port if non-standard.
+AUTH_URL: The URL endpoint to verify authentication. Not used for LDAP.
+SSL_CERT: If Clowder uses SSL then authentication requires a local public certificate. If unspecified will attempt to use HTTP rather than HTTPS for authentication.
+LDAP_HOSTNAME: The full URI to the LDAP server. Include the port if non-standard. ** Depreciated. Use AUTH_HOSTNAME. **
 LDAP_GROUP: The LDAP group name that contains people that are authorized.
 LDAP_BASE_DN: The base DN for the LDAP server.
 LDAP_USER_DN: Applied to the base DN to find users.
