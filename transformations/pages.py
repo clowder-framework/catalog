@@ -65,7 +65,7 @@ def softwares():
 @bp.route('/transformations', methods=('GET', 'POST'))
 def post_transformation():
     # Check if user has logged in or anonymous submission is allowed
-    if g.user is not None or current_app.config["ANONYMOUS_SUBMISSION"] is "True":
+    if g.user is not None or current_app.config["ANONYMOUS_SUBMISSION"].lower() == "true":
         if request.method == 'POST':
 
             transformation_type = request.form['radioOptions']
