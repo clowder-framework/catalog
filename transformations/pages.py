@@ -117,9 +117,12 @@ def post_transformation():
                 print(transformation_type + " added. ID: "  + str(result_id))
                 return redirect(url_for('pages.view_transformation', transformation_id = result_id))
             except ValueError as e:
-                print("Invalid JSON.")
-                raise
-            
+                raise ValueError("Invalid JSON.")
+            except json.JSONDecodeError as e:
+                raise json.JSONDecodeError("Unable to decode the JSON")
+            except KeyError as ke:
+                raise KeyError("There is a missing necessary section of the extractor info")
+
         return render_template('pages/post_transformation.html')
     return redirect(url_for('auth.login'))
 
