@@ -47,7 +47,7 @@ def home():
     if software:
         transformations = collection.transformations.find({"dependencies": software})
     else:
-        transformations = collection.transformations.find()
+        transformations = collection.transformations.find({"status": "approved"})
     return render_template('pages/home.html', transformations = transformations, getIcon = getIcon,
                            hasIcons = hasIcons)
 
@@ -64,8 +64,8 @@ def softwares():
 
 @bp.route('/transformations', methods=('GET', 'POST'))
 def post_transformation():
-    # Check if user has logged in
-    if g.user is not None:
+    # Check if user has logged in or anonymous submission is allowed
+    if g.user is not None or current_app.config["ANONYMOUS_SUBMISSION"].lower() == "true":
         if request.method == 'POST':
 
             transformation_type = request.form['radioOptions']
@@ -122,7 +122,7 @@ def post_transformation():
             except ValueError as e:
                 print("Invalid JSON.")
                 raise
-            
+
         return render_template('pages/post_transformation.html')
     return redirect(url_for('auth.login'))
 
