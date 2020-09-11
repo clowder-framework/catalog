@@ -168,6 +168,12 @@ To run the docker image you may like the following command line:
 % docker run --rm -d -p 5000:5000 -v path_to_conf/config.py:/app/instance/config.py transformation
 ```
 
+3. Run locally using docker-compose
+
+docker-compose is provided as an easy test environment. An initial config.json is provided for ease of testing that is set to use the values from the docker-compose. This allows for a quick clone of the repository and a simple `docker-compose up` to start using an unsecured version of the catalog locally. This configuration file allows for anyone to submit transformations and exposes the catalog on local port 5000, suitable for testing, but likely not what you want for production.
+
+Beyond simply cloning the repo and using `docker-compose up`, you may want to make local changes and test those. `docker-compose up --build` will rebuild the images, and clear the database volume. The database can be empty and still function with the catalog, with the only failure being needing to create an index on the database for search to work. This bug may be addressed in future releases, automating creating the index.
+
 ## Kubernetes
 
 The transformations-catalog.yaml file uses the browndog/transformations-catalog image posted on Docker Hub, though you can edit the yaml to use a local build of the image if you want to make changes to the image.
