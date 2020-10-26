@@ -20,7 +20,8 @@ def login():
         password = request.form['password']
         error = None
         user = None
-        if re.search(r'LDAP', current_app.config["AUTH_TYPE"], flags=re.IGNORECASE):
+        if re.search(r'LDAP', current_app.config["AUTH_TYPE"], flags=re.IGNORECASE) or "LDAP_HOSTNAME" \
+                                                                            in current_app.config.keys():
             if "AUTH_HOSTNAME" in current_app.config.keys():
                 ldap_hostname = current_app.config['AUTH_HOSTNAME']
             else:
