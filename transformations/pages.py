@@ -66,7 +66,7 @@ def softwares():
 @bp.route('/transformations', methods=('GET', 'POST'))
 def post_transformation():
     # Check if user has logged in or anonymous submission is allowed
-    if g.user is not None or current_app.config["ANONYMOUS_SUBMISSION"] is "True":
+    if g.user is not None or current_app.config["ANONYMOUS_SUBMISSION"].lower() == "true":
         if request.method == 'POST':
 
             transformation_type = request.form['radioOptions']
@@ -112,6 +112,11 @@ def post_transformation():
                 dict_info_json["updated"] = datetime.datetime.utcnow()
 
                 print(dict_info_json)
+                # Prior to insert, check the name and version if they already exist then error out, otherwise insert
+                query_result_id = database.transformations.find_one({
+                    "transformationId": dict_info_json["transformationId"], "version": dict_info_json["version"]})
+                if query_result_id:
+                    return redirect(url_for('pages.update_transformation', transformation_id = query_result_id["_id"]))
                 result_id = database.transformations.insert(dict_info_json)
                 print(transformation_type + " added. ID: "  + str(result_id))
                 return redirect(url_for('pages.view_transformation', transformation_id = result_id))
@@ -150,7 +155,6 @@ def view_transformation(transformation_id):
                            transformations = alltransformations, getIcon = getIcon,
                            replaceEmptyString = replaceEmptyString)
 
-
 @bp.route('/search', methods=['GET'])
 def search():
     try:
@@ -164,3 +168,7 @@ def search():
         raise
     return render_template('pages/home.html', transformations = transformation, getIcon = getIcon,
                            hasIcons = hasIcons)
+
+@bp.route('/transformations/<transformation_id>/update', methods=['GET', 'POST'])
+def update_transformation(transformation_id):
+    return "A transformation already exists with that name and version.", 501
