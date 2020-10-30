@@ -10,3 +10,7 @@
 .btn-group-sm>.btn, .btn-sm {
     padding: 0rem .5rem;
 }
+
+.version {
+    text-align: right;
+}
