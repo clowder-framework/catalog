@@ -8,7 +8,6 @@ import json
 from http.client import HTTPConnection, HTTPSConnection
 from base64 import b64encode
 import re
-import ssl
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -20,8 +19,8 @@ def login():
         password = request.form['password']
         error = None
         user = None
-        if re.search(r'LDAP', current_app.config["AUTH_TYPE"], flags=re.IGNORECASE) or "LDAP_HOSTNAME" \
-                                                                            in current_app.config.keys():
+        if current_app.config["AUTH_TYPE"].lower() == "ldap" or ("AUTH_TYPE" not in current_app.config.keys() and \
+                                                                 "LDAP_HOSTNAME" in current_app.config.keys()):
             if "AUTH_HOSTNAME" in current_app.config.keys():
                 ldap_hostname = current_app.config['AUTH_HOSTNAME']
             else:
@@ -51,13 +50,15 @@ def login():
 
             ldap_client.unbind_s()
             user = dict()
-        elif re.search(r'Clowder', current_app.config["AUTH_TYPE"], flags=re.IGNORECASE):
+        elif current_app.config["AUTH_TYPE"].lower() == "clowder":
             auth_hostname = current_app.config["AUTH_HOSTNAME"]
-            if "SSL_CERT" not in current_app.config.keys() or current_app.config["SSL_CERT"] is None \
-                                                              or current_app.config["SSL_CERT"] == "":
-                conn = HTTPConnection(auth_hostname)
+            if current_app.config["AUTH_URL"].startswith("https://"):
+                if "SSL_CERT" in current_app.config.keys():
+                    conn = HTTPSConnection(auth_hostname, cert_file=current_app.config["SSL_CERT"])
+                else:
+                    conn = HTTPSConnection(auth_hostname)
             else:
-                conn = HTTPSConnection(auth_hostname, cert_file=current_app.config["SSL_CERT"])
+                conn = HTTPConnection(auth_hostname)
             userAndPass = b64encode(bytes(username + ":" + password, "utf-8")).decode("ascii")
             headers = {'Authorization': 'Basic %s' % userAndPass}
             conn.request("GET", current_app.config["AUTH_URL"], headers=headers)
