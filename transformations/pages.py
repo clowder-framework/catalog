@@ -8,6 +8,8 @@ import codecs
 import json
 import datetime
 from werkzeug.exceptions import HTTPException
+from pymongo.collation import Collation
+
 
 bp = Blueprint('pages', __name__)
 
@@ -48,7 +50,7 @@ def home():
     if software:
         transformations = collection.transformations.find({"dependencies": software})
     else:
-        transformations = collection.transformations.find()
+        transformations = collection.transformations.find({"status": "approved"})
     return render_template('pages/home.html', transformations = transformations, getIcon = getIcon,
                            hasIcons = hasIcons)
 
@@ -66,8 +68,8 @@ def softwares():
 
 @bp.route('/transformations', methods=('GET', 'POST'))
 def post_transformation():
-    # Check if user has logged in
-    if g.user is not None:
+    # Check if user has logged in or anonymous submission is allowed
+    if g.user is not None or current_app.config["ANONYMOUS_SUBMISSION"].lower() == "true":
         if request.method == 'POST':
 
             transformation_type = request.form['radioOptions']
@@ -113,6 +115,11 @@ def post_transformation():
                 dict_info_json["updated"] = datetime.datetime.utcnow()
 
                 print(dict_info_json)
+                # Prior to insert, check the name and version if they already exist then error out, otherwise insert
+                query_result_id = database.transformations.find_one({
+                    "transformationId": dict_info_json["transformationId"], "version": dict_info_json["version"]})
+                if query_result_id:
+                    return redirect(url_for('pages.update_transformation', transformation_id = query_result_id["_id"]))
                 result_id = database.transformations.insert(dict_info_json)
                 print(transformation_type + " added. ID: "  + str(result_id))
                 return redirect(url_for('pages.view_transformation', transformation_id = result_id))
@@ -122,6 +129,7 @@ def post_transformation():
                 raise json.JSONDecodeError("Unable to decode the JSON")
             except KeyError as ke:
                 raise KeyError("There is a missing necessary section of the extractor info")
+
 
         return render_template('pages/post_transformation.html')
     return redirect(url_for('auth.login'))
@@ -143,13 +151,16 @@ def view_transformation(transformation_id):
         db = get_db()
         database = db[current_app.config['TRANSFORMATIONS_DATABASE_NAME']]
         transformation  = database.transformations.find_one({ "_id": ObjectId(transformation_id)})
+        alltransformations = database.transformations.find({"transformationId":
+                                                             transformation["transformationId"] }).sort("version", -1).\
+                                                             collation(Collation(locale='en_US', numericOrdering=True))
 
     except Exception as e:
         print("Exception")
         raise
-    return render_template('pages/view_transformation.html', transformation = transformation, getIcon = getIcon,
+    return render_template('pages/view_transformation.html', originalTransformation = transformation,
+                           transformations = alltransformations, getIcon = getIcon,
                            replaceEmptyString = replaceEmptyString)
-
 
 @bp.route('/search', methods=['GET'])
 def search():
@@ -164,3 +175,7 @@ def search():
         raise
     return render_template('pages/home.html', transformations = transformation, getIcon = getIcon,
                            hasIcons = hasIcons)
+
+@bp.route('/transformations/<transformation_id>/update', methods=['GET', 'POST'])
+def update_transformation(transformation_id):
+    return "A transformation already exists with that name and version.", 501

@@ -3,41 +3,69 @@
 
 {% block content %}
 <div class="container">
-    <div class="card">
-        <h4 class="card-header">{{transformation.transformationId }}</h4>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-6" style="padding-right:20px; border-right: 1px solid #ccc;">
-                    <h4>Description</h4>
-                    <p>{{transformation.description}}</p>
+    {% for transformation in transformations %}
+        {% if originalTransformation == transformation %}
+            <div class="card" style="border: 3px solid green">
+        {% else %}
+            <div class="card">
+        {% endif %}
+            <h4 class="card-header">{{transformation.transformationId }}</h4>
+            <h6 class="version">Version: {{ transformation.version }}</h6>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6" style="padding-right:20px; border-right: 1px solid #ccc;">
+                        <h4>Description</h4>
+                        <p>{{transformation.description}}</p>
+                        <hr />
+
+                        <h4>Source Code URL</h4>
+                        <p><a href="{{ transformation.url }}">{{ transformation.url }}</a></p>
+                    </div>
+                    <div class="col-6">
+                        <h4>Software Used</h4>
+                        {% for software in transformation.dependencies  %}
+                        <p>{{software}}
+                            {% if getIcon(software) %}
+                            <a href="{{ url_for('pages.home', software=software) }}">
+                                <img class="icon"  src="data:image/png;base64,{{getIcon(software)}}"
+                                     alt="Icon of the tool {{transformation.title}}" >
+                            </a>
+                        </p>
+                        {% endif%}
+                        {% endfor%}
+
+                        <h4>Docker Image Name</h4>
+                        <p>{{replaceEmptyString(transformation.dockerImageName)}}</p>
+                        <h4>Author</h4>
+                        <p>{{transformation.author}}</p>
+                        {% if transformation.contributors|length > 0 %}
+                        <h4>Contributors</h4>
+                            <p>
+                            {% for contributor in transformation.contributors %}
+                                {% if loop.last %}
+                                    {{ contributor }}
+                                {% else %}
+                                    {{ contributor }},
+                                {% endif %}
+                            {% endfor %}
+                            </p>
+                        {% endif %}
+                        <h4>Last Modified</h4>
+                        <p>{{transformation.updated.date()}}</p>
+                    </div>
+                </div>
+                {% if transformation.bibtex|length > 0 and transformation.bibtex[0] != "" %}
+                <div>
                     <hr />
-
-                    <h4>Source Code URL</h4>
-                    <p>   {{transformation.url}}</p>
+                    <h4>Citations</h4>
+                    {% for citation in transformation.bibtex %}
+                        <p>{{ citation }}</p>
+                    {% endfor %}
                 </div>
-                <div class="col-6">
-                    <h4>Software Used</h4>
-                    {% for software in transformation.dependencies  %}
-                    <p>{{software}}
-                        {% if getIcon(software) %}
-                        <a href="{{ url_for('pages.home', software=software) }}">
-                            <img class="icon"  src="data:image/png;base64,{{getIcon(software)}}"
-                                 alt="Icon of the tool {{transformation.title}}" >
-                        </a>
-                    </p>
-                    {% endif%}
-                    {% endfor%}
-
-                    <h4>Docker Image Name</h4>
-                    <p>{{replaceEmptyString(transformation.dockerImageName)}}</p>
-                    <h4>Author</h4>
-                    <p>{{transformation.author}}</p>
-                    <h4>Last Modified</h4>
-                    <p>{{transformation.updated.date()}}</p>
-                </div>
+                {% endif %}
             </div>
         </div>
-    </div>
+    {% endfor %}
 
 </div>
 {% endblock %}

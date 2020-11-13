@@ -73,3 +73,10 @@ def load_logged_in_user():
 def logout():
     session.clear()
     return redirect(url_for('pages.home'))
+
+@bp.route('/register')
+def register():
+    if 'REGISTRATION_URL' in current_app.config.keys() and current_app.config['REGISTRATION_URL']:
+        return redirect(current_app.config['REGISTRATION_URL'])
+    else:
+        return "Local registration not yet implemented", 501
