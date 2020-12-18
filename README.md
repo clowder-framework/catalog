@@ -77,7 +77,7 @@ The current yaml assumes you are using a remote database. Future versions may ad
 
 ## Transitioning
 
-If you had been using the tools catalog in the past and wish to transition that data to the Transformations Catalog there is a transition script that will query from the tools catalog database to the transformations catalog database. It is simple and uses it's own configuration file so as to not need a ton of command line options, despite likely only needing to be run a single time.
+If you had been using the tools catalog in the past and wish to transition that data to the Transformations Catalog there is some code to transition the tools catalog database to the transformations catalog database. It is listed here, but there is also a file with the code (transition.py). While the file is labeled as python not all the code has been converted to python for proper running.
 
 ## PyMongo Code Snippet
 
