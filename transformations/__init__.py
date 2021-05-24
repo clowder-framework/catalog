@@ -8,6 +8,7 @@ from . import auth
 from . import publish
 from . import pages
 from . import api
+from . import errors
 from transformations.db import get_db
 
 
@@ -43,6 +44,7 @@ def create_app(test_config=None):
     app.register_blueprint(publish.bp, url_prefix=prefix+'/publish', static_folder="static")
     app.register_blueprint(pages.bp, url_prefix=prefix, static_folder="static")
     app.register_blueprint(api.bp, url_prefix=prefix+'/api/v2', static_folder="static")
+    app.register_blueprint(errors.bp, url_prefix=prefix, static_folder="static")
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
@@ -58,3 +60,4 @@ def create_app(test_config=None):
     db.init_app(app)
 
     return app
+
